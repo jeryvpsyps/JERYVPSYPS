@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JERYVPSYPS - Firma de Abogados Celestial</title>
+
+  <!-- Fuente (puedes cambiar o compilar Tailwind en producción) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <style>
+    :root{
+      --bg: #0b0b0b;
+      --card: rgba(255,255,255,0.95);
+      --text: #1a1a1a;
+      --gold: #d4af37;
+      --gold-dark: #b0892a;
+      --shadow: rgba(0,0,0,0.25);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    html { height: 100%; }
+    body {
+      min-height: 100%;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      background: radial-gradient(circle at 20% 0%, rgba(212,175,55,0.25), transparent 40%),
+                  radial-gradient(circle at 80% 20%, rgba(0,0,0,0.25), transparent 40%),
+                  #1a1a1a;
+      overflow-x: hidden;
+      direction: ltr;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    body.rtl {
+        direction: rtl;
+        text-align: right;
+    }
+
+    /* Fondo sutil de movimiento (mínimo) */
+    #bg-canvas { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; }
+
+    /* Cabecera */
+    header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 68px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      z-index: 20; border-bottom: 1px solid rgba(255,215,0,0.3);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand-name { font-family: 'Cinzel', serif; font-weight: 700; color: var(--gold); letter-spacing: .2em; text-transform: uppercase; font-size: 14px; }
+    .brand-subtitle {
+      font-size: 9px;
+      color: #ccc;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+    .header-controls { display: flex; align-items: center; gap: 12px; }
+    .header-btn {
+        background: transparent;
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .header-btn:hover {
+        background-color: var(--gold);
+        color: #111;
+    }
+    .lang-select { background: rgba(255,255,255,0.9); color: #111; border: 0; border-radius: 6px; padding: 8px; font-weight: 500; }
+
+    main { position: relative; z-index: 10; padding-top: 90px; flex-grow: 1; }
+
+    /* Introducción */
+    .intro { text-align: center; margin: 24px auto 18px; max-width: 900px; color: #f5f5f5; padding: 0 15px; }
+    .intro h1 { font-family: 'Cinzel', serif; font-weight: 700; color: var(--gold); letter-spacing: .2em; text-transform: uppercase; font-size: clamp(20px, 4vw, 28px); line-height: 1.4; }
+    .intro p { color: #ddd; font-size: clamp(14px, 2.5vw, 16px); max-width: 700px; margin: 1em auto 0; line-height: 1.6; }
+
+    /* Carrusel 3D */
+    .carousel { width: min(900px, 92vw); height: 420px; margin: 40px auto; perspective: 1000px; position: relative; z-index: 5; }
+    .carousel-stage { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(.2,.8,.2,1); }
+    .carousel-item {
+      position: absolute; top: 50%; left: 50%; width: 210px; height: 120px;
+      margin: -60px 0 0 -105px; /* centrado */
+      background: linear-gradient(#fff, #f6f6f6);
+      border: 2px solid var(--gold);
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      color: #1a1a1a; font-weight: 700; text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      cursor: pointer; user-select: none;
+      padding: 12px;
+      transition: transform 0.4s ease, filter 0.3s ease;
+    }
+    .carousel-item:hover { transform: scale(1.04); filter: saturate(1.05); }
+    .carousel-item:focus { outline: 3px solid rgba(212,175,55,0.8); }
+
+    .nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer;
+      color: white; background: rgba(212,175,55,0.95);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 22px; z-index: 6; box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    }
+    .nav:hover { background: rgba(184,158,75,1); transform: translateY(-50%) scale(1.04); }
+    #prev { left: -22px; }
+    #next { right: -22px; }
+    body.rtl #prev { left: auto; right: -22px; transform: translateY(-50%) scaleX(-1); }
+    body.rtl #next { right: auto; left: -22px; transform: translateY(-50%) scaleX(-1); }
+
+
+    /* Modal de servicio */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      display: none; 
+      align-items: flex-start; 
+      justify-content: center; 
+      z-index: 30;
+      backdrop-filter: blur(3px);
+      padding: 12vh 15px; 
+      overflow-y: auto; 
+    }
+    .modal { 
+      width: min(720px, 92vw); 
+      background: rgba(255,255,255,0.98);
+      color: #333; 
+      border-radius: 12px; 
+      padding: 0; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      border: 2px solid var(--gold);
+      max-height: 76vh; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    .modal-header { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding: 14px 16px;
+      border-bottom: 1px solid #eee;
+      flex-shrink: 0; 
+    }
+    .modal-header h3 { margin: 0; font-family: 'Cinzel', serif; color: #1a1a1a; }
+    .modal-body { 
+      padding: 16px; 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 14px; 
+      overflow-y: auto; 
+    }
+    .modal-body .section { background: #fff; border-radius: 10px; padding: 12px; border: 1px solid #eee; }
+    #service-desc h4 { font-family: 'Cinzel', serif; margin: 16px 0 4px 0; color: #333; }
+    #service-desc hr { border: 0; border-top: 1px solid #eee; }
+    
+    .modal-actions { 
+      padding: 12px 16px; 
+      text-align: right; 
+      border-top: 1px solid #eee;
+      flex-shrink: 0; 
+    }
+    body.rtl .modal-actions { text-align: left; }
+
+    .close-btn { background: #111; color: #fff; border: 0; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+
+    #specialties-list, #costs-content {
+        grid-template-columns: 1fr;
+    }
+    #costs-content h4 { font-family: 'Cinzel', serif; color: #1a1a1a; margin-top: 0; }
+    #costs-content p { margin-top: 0; line-height: 1.6; }
+    #costs-content strong { color: var(--gold-dark); }
+    
+    .specialty-item {
+        background: #fff;
+        padding: 12px 16px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s, box-shadow 0.2s;
+        font-weight: 500;
+        color: #333;
+    }
+    .specialty-item:hover {
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    form .field { display: grid; gap: 6px; margin-bottom: 12px; }
+    form .field[style*="text-align:right;"] { text-align: right; }
+    body.rtl form .field[style*="text-align:right;"] { text-align: left; }
+
+    label { font-size: 12px; color: #555; font-weight: 500; }
+    input, textarea { padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; width: 100%; }
+    textarea { min-height: 100px; resize: vertical; }
+
+    /* IA - Panel deslizante */
+    .advisor { position: fixed; top: 0; right: 0; height: 100%; width: 360px;
+      background: rgba(15,15,15,0.98); color: #fff; z-index: 40; transform: translateX(100%);
+      transition: transform 0.3s ease; border-left: 1px solid #444;
+      display: flex; flex-direction: column;
+    }
+    body.rtl .advisor { right: auto; left: 0; transform: translateX(-100%); border-left: none; border-right: 1px solid #444; }
+
+    .advisor.open { transform: translateX(0); }
+    body.rtl .advisor.open { transform: translateX(0); }
+    
+    .advisor-header { padding: 12px; display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #444;
+    }
+    .advisor-title { font-weight: 700; font-size: 14px; }
+    .advisor-content { padding: 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; }
+    .chat-area { height: 100%; display: flex; flex-direction: column; gap: 8px; }
+    .messages { flex: 1; overflow-y: auto; padding: 6px; border: 1px solid #444; border-radius: 6px; background: #111; }
+    .message { padding: 6px 8px; border-radius: 8px; margin: 6px 0; max-width: 85%; line-height: 1.4; white-space: pre-wrap; }
+    .message.user { background: #2d2d2d; align-self: flex-end; }
+    .message.bot { background: #333; align-self: flex-start; }
+    body.rtl .message.user { align-self: flex-start; }
+    body.rtl .message.bot { align-self: flex-end; }
+    .message.bot.thinking::after {
+      content: '...';
+      display: inline-block;
+      animation: thinking 1.5s infinite;
+    }
+    @keyframes thinking {
+      0% { content: '.'; }
+      33% { content: '..'; }
+      66% { content: '...'; }
+    }
+    .input-area { display: flex; gap: 6px; padding: 6px; border-top: 1px solid #444; }
+    .input-area input { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #111; color: #fff; }
+    .advisor-tab {
+      position: fixed; top: 50%; right: 0; transform: translateY(-50%);
+      background: var(--gold); color: #1a1a1a; padding: 12px 14px; border-radius: 8px 0 0 8px;
+      cursor: pointer; font-weight: 700; z-index: 35; border: 0;
+      box-shadow: -2px 2px 8px rgba(0,0,0,0.3);
+    }
+    body.rtl .advisor-tab { right: auto; left: 0; border-radius: 0 8px 8px 0; box-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+
+    /* Footer */
+    .site-footer {
+      background-color: #000;
+      color: #ccc;
+      padding: 30px 20px;
+      text-align: center;
+      border-top: 1px solid rgba(212,175,55,0.3);
+      position: relative;
+      z-index: 10;
+    }
+    .footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+    .footer-contact p {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+    }
+    .footer-contact a {
+      color: #fff;
+      text-decoration: none;
+    }
+    .footer-contact a:hover {
+      color: var(--gold);
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .social-links a {
+      color: #ccc;
+      transition: color 0.2s;
+    }
+    .social-links a:hover {
+      color: var(--gold);
+    }
+    .social-links svg {
+      width: 24px;
+      height: 24px;
+    }
+    .footer-copyright {
+      font-size: 12px;
+      color: #888;
+      margin-top: 10px;
+    }
+
+
+    /* Responsivo */
+    @media (max-width: 900px){
+      .modal-body { grid-template-columns: 1fr; }
+      .advisor { width: 100%; max-width: 400px; }
+    }
+    @media (max-width: 600px){
+      #bg-canvas { display: none; } /* simplifica en móvil si quieres */
+    }
+
+    /* Utilitarios (accesibilidad de foco) */
+    [aria-hidden="true"] { display: none; }
+  </style>
+</head>
+<body>
+  <!-- Fondo opcional (poco pesado) -->
+  <canvas id="bg-canvas" aria-label="Fondo dinámico"></canvas>
+
+  <!-- Cabecera -->
+  <header role="navigation" aria-label="Navegación principal">
+    <div class="brand" aria-label="Marca">
+      <div class="brand-text">
+        <span class="brand-name" data-i18n="brand-short">JERYVPSYPS</span>
+        <span class="brand-subtitle" data-i18n="brand-subtitle">Firma de Abogados</span>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <button id="specialties-btn" class="header-btn" data-i18n="specialties-button">Especialidades</button>
+      <button id="costs-btn" class="header-btn" data-i18n="costs-button">Costos</button>
+      <select id="lang-select" class="lang-select" aria-label="Seleccionar idioma">
+        <option value="es" selected>Español</option>
+        <option value="en">English</option>
+        <option value="he">עברית</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro" aria-label="Introducción">
+      <h1 data-i18n="title">Bienaventurados los que tienen sed de justicia porque ellos serán saciados</h1>
+      <p data-i18n="subtitle">Bienvenido(a) a nuestra firma de abogados JERYVPSYPS, donde la justicia se convierte en soluciones reales. Aquí no solo defendemos casos, defendemos personas, defendemos sueños y defendemos futuro. Nuestro compromiso es claro: trabajar con pasión, transparencia y resultados. Porque en JERYVPSYPS, cada cliente importa, cada historia cuenta y cada victoria es compartida. Estamos aquí para ser más que abogados: queremos ser sus aliados legales de confianza.</p>
+    </section>
+
+    <!-- Carrusel 3D -->
+    <section class="carousel" aria-label="Catálogo de servicios" id="carousel-area">
+      <button class="nav" id="prev" aria-label="Anterior">‹</button>
+      <div class="carousel-stage" id="carousel-stage" role="group" aria-roledescription="Carrusel 3D" style="transform: rotateY(0deg);">
+        <!-- Elementos generados por JS desde la constante SERVICES -->
+      </div>
+      <button class="nav" id="next" aria-label="Siguiente">›</button>
+    </section>
+
+    <!-- Modal de Servicio (oculto por defecto) -->
+    <div class="overlay" id="service-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="service-title">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="service-title" data-i18n="service-detail-title">Detalle del servicio</h3>
+          <button class="close-btn" id="close-service-modal" aria-label="Cerrar">Cerrar</button>
+        </div>
+        <div class="modal-body" id="modal-content">
+          <div class="section" id="service-desc" aria-live="polite">
+            <!-- Descripción dinámica -->
+            <p data-i18n="service-desc">Seleccione un servicio para ver una descripción detallada y un formulario de contacto.</p>
+          </div>
+
+          <div class="section" id="service-form" aria-label="Formulario de contacto">
+            <form id="contact-form" action="https://formspree.io/f/xyzpardp" method="POST" autocomplete="on" aria-label="Formulario de contacto para el servicio">
+              <input type="hidden" id="service-id" name="service-id" value="" />
+              <div class="field">
+                <label for="name" data-i18n="label-name">Nombre</label>
+                <input type="text" id="name" name="name" placeholder="" data-i18n-placeholder="placeholder-name" required/>
+              </div>
+              <div class="field">
+                <label for="email" data-i18n="label-email">Email</label>
+                <input type="email" id="email" name="email" placeholder="" data-i18n-placeholder="placeholder-email" required/>
+              </div>
+              <div class="field">
+                <label for="message" data-i18n="label-message">Mensaje</label>
+                <textarea id="message" name="message" placeholder="" data-i18n-placeholder="placeholder-message" required></textarea>
+              </div>
+              <div class="field" style="text-align:right; margin-bottom: 0;">
+                <button type="submit" class="close-btn" aria-label="Enviar consulta" style="background:#1a1a1a;">Enviar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <span aria-live="polite" id="modal-status" style="margin-right:8px; color:#666; font-size:12px;"></span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal de Especialidades -->
+    <div class="overlay" id="specialties-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="specialties-title">
+        <div class="modal">
+            <div class="modal-header">
+              <h3 id="specialties-title" data-i18n="specialties-title">Nuestras Especialidades</h3>
+              <button class="close-btn" id="close-specialties-modal" aria-label="Cerrar">Cerrar</button>
+            </div>
+            <div class="modal-body" id="specialties-list">
+              <!-- Lista generada por JS -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Costos -->
+    <div class="overlay" id="costs-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="costs-title">
+        <div class="modal">
+            <div class="modal-header">
+              <h3 id="costs-title" data-i18n="costs-title">Nuestros Honorarios</h3>
+              <button class="close-btn" id="close-costs-modal" aria-label="Cerrar">Cerrar</button>
+            </div>
+            <div class="modal-body" id="costs-content">
+              <div class="section">
+                  <p data-i18n="costs-intro">Creemos en la transparencia como base de la confianza.</p>
+                  <h4 data-i18n="costs-initial-title">Asesoría Legal Inicial</h4>
+                  <p><strong>$200,000 COP</strong></p>
+                  <p data-i18n="costs-initial-desc">Consulta para diagnóstico del caso, análisis de documentos y plan de acción. La asesoría se entrega de forma escrita.</p>
+                  <h4 data-i18n="costs-other-title">Otros Servicios Legales</h4>
+                  <p data-i18n="costs-other-desc">Para otros procesos, los honorarios se basan en la complejidad y recursos. Le daremos una cotización detallada tras la asesoría inicial.</p>
+              </div>
+            </div>
+        </div>
+    </div>
+
+  </main>
+
+  <!-- Panel IA (deslizable) -->
+  <button class="advisor-tab" id="open-advisor" aria-label="Abrir asesor IA">Asesor IA</button>
+
+  <aside class="advisor" id="advisor" aria-label="Asesor IA">
+    <div class="advisor-header">
+      <span class="advisor-title" data-i18n="advisor-title">Asesoría IA en tiempo real</span>
+      <button class="close-btn" id="close-advisor" aria-label="Cerrar asesor IA" style="background:#333; padding:6px 10px;">Cerrar</button>
+    </div>
+    <div class="advisor-content">
+      <div class="chat-area" aria-label="Chat con asesor IA">
+        <div class="messages" id="messages" aria-live="polite">
+          <div class="message bot" role="group" aria-label="Mensaje de inicio del asesor">Hola. Soy tu asesor legal. ¿En qué puedo ayudarte?</div>
+        </div>
+        <div class="input-area">
+          <input type="text" id="user-input" placeholder="" data-i18n-placeholder="placeholder-question" aria-label="Escribe tu pregunta"/>
+          <button id="send-btn" class="close-btn" aria-label="Enviar pregunta" style="padding:8px 12px;">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-content">
+      <div class="footer-contact">
+        <p>Bogotá, Colombia</p>
+      </div>
+      <div class="social-links" aria-label="Redes sociales">
+        <a href="https://www.linkedin.com/in/jeryvpsyps-asesorialegal-40b48637b/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.25 6.5 1.75 1.75 0 016.5 8.25zM19 19h-3v-4.74c0-1.42-.6-2.16-1.9-2.16-1.4 0-2.1.8-2.1 2.16V19h-3v-9h3v1.38c.6-.94 1.7-1.63 3.1-1.63 2.5 0 4.9 1.48 4.9 4.62V19z"/></svg>
+        </a>
+        <a href="https://x.com/jeryvpsyps" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@JERYVPSYPSASESORIALEGAL" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21.582 7.042c-.225-.824-.863-1.46-1.688-1.685C18.236 5 12 5 12 5s-6.236 0-7.894.357c-.825.225-1.463.86-1.688 1.685C2 8.704 2 12 2 12s0 3.296.418 4.958c.225.824.863 1.46 1.688 1.685C5.764 19 12 19 12 19s6.236 0 7.894-.357c.825-.225-1.463.86-1.688-1.685C22 15.296 22 12 22 12s0-3.296-.418-4.958zM9.75 15.11V8.89l5.25 3.11-5.25 3.11z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61579002412136" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v7.034C18.343 21.128 22 16.991 22 12z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/jeryvpsyps/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.85s.012-3.584.07-4.85c.149-3.227 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163zm0 1.441c-3.171 0-3.53.012-4.76.069-2.61.12-3.832 1.342-3.953 3.953-.057 1.229-.069 1.589-.069 4.759s.012 3.53.069 4.76c.12 2.61 1.342 3.832 3.953 3.953 1.229.057 1.589.069 4.76.069s3.53-.012 4.76-.069c2.61-.12 3.832-1.342 3.953-3.953.057-1.229.069-1.589.069-4.76s-.012-3.53-.069-4.76c-.12-2.61-1.342-3.832-3.953-3.953-1.23-.057-1.59-.069-4.76-.069zm0 3.192c-2.702 0-4.881 2.179-4.881 4.881s2.179 4.881 4.881 4.881 4.881-2.179 4.881-4.881-2.179-4.881-4.881-4.881zm0 7.929c-1.684 0-3.048-1.364-3.048-3.048s1.364-3.048 3.048-3.048 3.048 1.364 3.048 3.048-1.364 3.048-3.048 3.048zm4.881-8.428c-.742 0-1.343.601-1.343 1.343s.601 1.343 1.343 1.343 1.343-.601 1.343-1.343-.601-1.343-1.343-1.343z"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@jeryvpsyps7" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-2.43.05-4.84-.95-6.43-2.8-1.59-1.87-2.16-4.2-1.8-6.51.36-2.31 1.82-4.28 3.8-5.46 1.05-.64 2.25-1.03 3.49-1.19.19-2.02.4-4.03.61-6.04.24-2.2.52-4.4.81-6.6.03-.24.05-.48.08-.73z"/></svg>
+        </a>
+        <a href="https://co.pinterest.com/jeryvpsyps/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.237 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.182-.78 1.172-4.97 1.172-4.97s-.299-.6-.299-1.486c0-1.39.806-2.428 1.81-2.428.852 0 1.264.64 1.264 1.408 0 .858-.545 2.14-.828 3.33-.236.995.5 1.807 1.48 1.807 1.778 0 3.144-1.874 3.144-4.58 0-2.415-1.717-4.18-4.12-4.18-2.846 0-4.515 2.135-4.515 4.34 0 .859.331 1.781.745 2.281a.3.3 0 01.069.288l-.278 1.133c-.044.183-.145.223-.335.134-1.344-.595-2.199-2.312-2.199-3.888 0-3.153 2.29-6.046 6.608-6.046 3.469 0 6.165 2.473 6.165 5.775 0 3.447-2.173 6.22-5.19 6.22-1.013 0-1.965-.527-2.291-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621C9.271 21.815 10.602 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        &copy; 2025 JERYVPSYPS. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Encapsulate script in an IIFE to avoid polluting the global scope
+    (function() {
+      // 1) I18n and Services Data
+      const translations = {
+        es: {
+          "brand-short": "JERYVPSYPS",
+          "brand-subtitle": "Firma de Abogados",
+          title: "Bienaventurados los que tienen sed de justicia porque ellos serán saciados",
+          subtitle: "Bienvenido(a) a nuestra firma de abogados JERYVPSYPS, donde la justicia se convierte en soluciones reales. Aquí no solo defendemos casos, defendemos personas, defendemos sueños y defendemos futuro. Nuestro compromiso es claro: trabajar con pasión, transparencia y resultados. Porque en JERYVPSYPS, cada cliente importa, cada historia cuenta y cada victoria es compartida. Estamos aquí para ser más que abogados: queremos ser sus aliados legales de confianza.",
+          "service-detail-title": "Detalle del servicio",
+          "service-desc": "Seleccione un servicio para ver su descripción detallada y un formulario de contacto.",
+          "label-name": "Nombre",
+          "label-email": "Email",
+          "label-message": "Mensaje",
+          "placeholder-name": "Ej. Marta Pérez",
+          "placeholder-email": "marta@ejemplo.com",
+          "placeholder-message": "Describe tu consulta…",
+          "advisor-title": "Asesor IA",
+          "placeholder-question": "Escribe tu pregunta…",
+          "form-thank-you": "Gracias. Hemos recibido tu consulta y te contactaremos pronto.",
+          "form-simulated": "Envío simulado. (Este ejemplo no envía datos a un servidor).",
+          "specialties-button": "Especialidades",
+          "specialties-title": "Nuestras Especialidades",
+          "costs-button": "Costos",
+          "costs-title": "Nuestros Honorarios",
+          "costs-intro": "Creemos en la transparencia como base de la confianza.",
+          "costs-initial-title": "Asesoría Legal Inicial",
+          "costs-initial-desc": "Consulta para diagnóstico del caso, análisis de documentos y plan de acción. La asesoría se entrega de forma escrita.",
+          "costs-other-title": "Otros Servicios Legales",
+          "costs-other-desc": "Para otros procesos, los honorarios se basan en la complejidad y recursos. Le daremos una cotización detallada tras la asesoría inicial."
+        },
+        en: {
+          "brand-short": "JERYVPSYPS",
+          "brand-subtitle": "Law Firm",
+          title: "Blessed are those who hunger and thirst for righteousness, for they will be filled.",
+          subtitle: "Welcome to our law firm, JERYVPSYPS, where justice becomes real solutions. Here, we don't just defend cases; we defend people, we defend dreams, and we defend futures. Our commitment is clear: to work with passion, transparency, and results. Because at JERYVPSYPS, every client matters, every story is heard, and every victory is shared. We are here to be more than just lawyers: we want to be your trusted legal allies.",
+          "service-detail-title": "Service details",
+          "service-desc": "Select a service to view its detailed description and a contact form.",
+          "label-name": "Name",
+          "label-email": "Email",
+          "label-message": "Message",
+          "placeholder-name": "e.g., John Doe",
+          "placeholder-email": "john@example.com",
+          "placeholder-message": "Describe your inquiry…",
+          "advisor-title": "AI Advisor",
+          "placeholder-question": "Type your question…",
+          "form-thank-you": "Thank you. Your inquiry has been received and we will respond soon.",
+          "form-simulated": "Submission simulated. (This example does not send data to a server).",
+          "specialties-button": "Specialties",
+          "specialties-title": "Our Specialties",
+          "costs-button": "Costs",
+          "costs-title": "Our Fees",
+          "costs-intro": "We believe in transparency as the foundation of trust.",
+          "costs-initial-title": "Initial Legal Advisory",
+          "costs-initial-desc": "Consultation for case diagnosis, document analysis, and action plan. The advice is delivered in writing.",
+          "costs-other-title": "Other Legal Services",
+          "costs-other-desc": "For other processes, fees are based on complexity and resources. We will provide a detailed quote after the initial consultation."
+        },
+        he: {
+          "brand-short": "JERYVPSYPS",
+          "brand-subtitle": "משרד עורכי דין",
+          title: "אשרי הרעבים והצמאים לצדק כי הם ישבעו",
+          subtitle: "ברוכים הבאים למשרד עורכי הדין שלנו, JERYVPSYPS, בו צדק הופך לפתרונות אמיתיים. כאן, אנחנו לא רק מגנים על תיקים; אנחנו מגנים על אנשים, על חלומות ועל עתיד. המחויבות שלנו ברורה: לעבוד בתשוקה, שקיפות ותוצאות. כי ב-JERYVPSYPS, כל לקוח חשוב, כל סיפור נחשב, וכל ניצחון משותף. אנחנו כאן כדי להיות יותר מסתם עורכי דין: אנחנו רוצים להיות בעלי בריתכם המשפטיים המהימנים.",
+          "service-detail-title": "פרטי השירות",
+          "service-desc": "בחר שירות כדי לראות את תיאורו המפורט וטופס יצירת קשר.",
+          "label-name": "שם",
+          "label-email": "אימייל",
+          "label-message": "הודעה",
+          "placeholder-name": "לדוגמה: משה כהן",
+          "placeholder-email": "moshe@example.com",
+          "placeholder-message": "תאר את פנייתך...",
+          "advisor-title": "יועץ AI",
+          "placeholder-question": "כתוב את שאלתך...",
+          "form-thank-you": "תודה. פנייתך התקבלה ואנו ניצור קשר בקרוב.",
+          "form-simulated": "הגשה מדומה. (דוגמה זו אינה שולחת נתונים לשרת).",
+          "specialties-button": "התמחויות",
+          "specialties-title": "ההתמחויות שלנו",
+          "costs-button": "עלויות",
+          "costs-title": "שכר הטרחה שלנו",
+          "costs-intro": "אנו מאמינים בשקיפות כיסוד האמון.",
+          "costs-initial-title": "ייעוץ משפטי ראשוני",
+          "costs-initial-desc": "פגישת ייעוץ לאבחון המקרה, ניתוח מסמכים ותוכנית פעולה. הייעוץ נמסר בכתב.",
+          "costs-other-title": "שירותים משפטיים אחרים",
+          "costs-other-desc": "עבור הליכים אחרים, שכר הטרחה מבוסס על מורכבות ומשאבים. אנו נספק הצעת מחיר מפורטת לאחר הייעוץ הראשוני."
+        }
+      };
+
+      let currentLang = 'es';
+      const SERVICES = [
+        { 
+          id: 'asesoria', 
+          names: { es: 'Asesoría Legal', en: 'Legal Advisory', he: 'ייעוץ משפטי' }, 
+          details: { es: {
+              description: 'Análisis detallado de su situación jurídica bajo la luz de la legislación colombiana vigente. Le proporcionamos un diagnóstico claro y un plan de acción estratégico para la protección de sus intereses, previniendo futuros litigios y asegurando la toma de decisiones informadas.',
+              cost: 'La asesoría legal inicial tiene un costo de $200,000 COP.',
+              process: 'Al enviar su consulta a través del formulario, recibirá un correo electrónico con las instrucciones detalladas para el pago y los pasos a seguir para agendar su caso.'
+            }
+          }
+        },
+        { 
+          id: 'peticion', 
+          names: { es: 'Derecho de Petición', en: 'Right of Petition', he: 'זכות העתירה' }, 
+          details: { es: {
+              description: 'Conforme al Artículo 23 de la Constitución Política de Colombia, garantizamos su derecho a presentar peticiones respetuosas a las autoridades. Redactamos y gestionamos sus solicitudes para asegurar una respuesta clara, oportuna y de fondo.',
+              cost: 'El costo varía según la complejidad y la entidad destinataria.',
+              process: 'Al enviar su consulta a través del formulario, recibirá un correo electrónico con las instrucciones detalladas para el pago y los pasos a seguir para agendar su caso.'
+            }
+          }
+        },
+        { 
+          id: 'tutela', 
+          names: { es: 'Acción de Tutela', en: 'Tutela Action', he: 'עתירת הגנה' }, 
+          details: { es: {
+              description: 'Defendemos sus derechos fundamentales con la máxima urgencia, basándonos en el Artículo 86 de la Constitución. Si su salud, vida o dignidad están en riesgo, actuamos de inmediato para obtener protección judicial efectiva.',
+              cost: 'El costo varía según la urgencia y complejidad del caso.',
+              process: 'Al enviar su consulta a través del formulario, recibirá un correo electrónico con las instrucciones detalladas para el pago y los pasos a seguir para agendar su caso.'
+            }
+          }
+        },
+        { 
+          id: 'empresas', 
+          names: { es: 'Asesoría a Empresas', en: 'Business Advisory', he: 'ייעוץ עסקי' }, 
+          details: { es: {
+              description: 'Ofrecemos un soporte legal integral en la creación, operación y expansión de su empresa, conforme al Código de Comercio y demás normativas aplicables, minimizando riesgos y optimizando su estructura legal.',
+              cost: 'Ofrecemos planes de asesoría mensual o por proyecto. Contáctenos para una cotización.',
+              process: 'Al enviar su consulta a través del formulario, recibirá un correo electrónico con las instrucciones detalladas para el pago y los pasos a seguir para agendar su caso.'
+            }
+          }
+        },
+        { 
+          id: 'contratos', 
+          names: { es: 'Contratos y Fusiones', en: 'Contracts & Mergers', he: 'חוזים ומיזוגים' }, 
+          details: { es: {
+              description: 'Asegure sus acuerdos comerciales con contratos sólidos, redactados bajo las normativas del Código Civil y Código de Comercio. Gestionamos procesos de fusión y adquisición para maximizar el valor de su negocio.',
+              cost: 'Los honorarios se basan en la complejidad del acuerdo o transacción.',
+              process: 'Al enviar su consulta a través del formulario, recibirá un correo electrónico con las instrucciones detalladas para el pago y los pasos a seguir para agendar su caso.'
+            }
+          }
+        },
+        { 
+          id: 'pi', 
+          names: { es: 'Propiedad Intelectual', en: 'Intellectual Property', he: 'קניין רוחני' }, 
+          details: { es: {
+              description: 'Proteja sus ideas y creaciones. Registramos y defendemos sus marcas, patentes y derechos de autor bajo la Decisión Andina 486 y la legislación nacional, asegurando que su innovación sea rentable y segura.',
+              cost: 'El costo depende del tipo de registro o acción de defensa requerida.',
+              process: 'Al enviar su consulta a través del formulario, recibirá un correo electrónico con las instrucciones detalladas para el pago y los pasos a seguir para agendar su caso.'
+            }
+          }
+        },
+        { 
+          id: 'litigios', 
+          names: { es: 'Litigios Civiles', en: 'Civil Litigation', he: 'ליטיגציה אזרחית' }, 
+          details: { es: {
+              description: 'Le ofrecemos representación firme y estratégica en disputas civiles, aplicando el Código General del Proceso para luchar por sus intereses y buscar la resolución más favorable en procesos judiciales.',
+              cost: 'Los honorarios se estructuran según la etapa procesal y la complejidad del litigio.',
+              process: 'Al enviar su consulta a través del formulario, recibirá un correo electrónico con las instrucciones detalladas para el pago y los pasos a seguir para agendar su caso.'
+            }
+          }
+        },
+        { 
+          id: 'cumplimiento', 
+          names: { es: 'Cumplimiento Regulatorio', en: 'Regulatory Compliance', he: 'ציות רגולטורי' }, 
+          details: { es: {
+              description: 'Navegue con seguridad el complejo entorno normativo. Le ayudamos a cumplir con las regulaciones de superintendencias (Supersociedades, Superfinanciera, etc.) para evitar sanciones y operar con tranquilidad.',
+              cost: 'Ofrecemos auditorías de cumplimiento y planes de mejora continua. Contáctenos para una propuesta.',
+              process: 'Al enviar su consulta a través del formulario, recibirá un correo electrónico con las instrucciones detalladas para el pago y los pasos a seguir para agendar su caso.'
+            }
+          }
+        },
+        { 
+          id: 'tributario', 
+          names: { es: 'Derecho Tributario', en: 'Tax Law', he: 'דיני מיסים' }, 
+          details: { es: {
+              description: 'Optimice su carga fiscal y cumpla con sus obligaciones. Brindamos asesoría experta en impuestos para personas y empresas, basándonos en el Estatuto Tributario, para garantizar eficiencia y legalidad.',
+              cost: 'El costo se define según la complejidad de la consulta o planificación tributaria.',
+              process: 'Al enviar su consulta a través del formulario, recibirá un correo electrónico con las instrucciones detalladas para el pago y los pasos a seguir para agendar su caso.'
+            }
+          }
+        }
+      ];
+
+      const stage = document.getElementById('carousel-stage');
+      
+      // 2) Render Carousel Dynamically
+      function renderCarousel() {
+        stage.innerHTML = '';
+        SERVICES.forEach((svc) => {
+          const el = document.createElement('div');
+          el.className = 'carousel-item';
+          el.dataset.service = svc.id;
+          el.setAttribute('role', 'button');
+          el.tabIndex = 0;
+          el.textContent = svc.names[currentLang] ?? svc.names.es;
+          el.setAttribute('aria-label', svc.names[currentLang] ?? svc.names.es);
+          stage.appendChild(el);
+          
+          el.addEventListener('click', () => openServiceModal(svc.id));
+          el.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openServiceModal(svc.id);
+            }
+          });
+        });
+        layoutCarousel();
+      }
+
+      // 3) 3D Layout
+      function layoutCarousel() {
+        const items = Array.from(stage.querySelectorAll('.carousel-item'));
+        const n = items.length;
+        if (n === 0) return;
+        const radius = 280; // Adjusted radius for more items
+        const step = 360 / n;
+        items.forEach((el, i) => {
+          const angle = i * step;
+          el.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
+        });
+      }
+
+      // 4) Navigation (Now Dynamic)
+      let currentRotation = 0;
+      const rotationStep = 360 / SERVICES.length; // Dynamic step calculation
+
+      function rotateCarousel(delta) {
+        currentRotation += delta;
+        stage.style.transform = `rotateY(${currentRotation}deg)`;
+      }
+      
+      document.getElementById('prev').addEventListener('click', () => rotateCarousel(-rotationStep));
+      document.getElementById('next').addEventListener('click', () => rotateCarousel(rotationStep));
+      
+      window.addEventListener('keydown', (e) => {
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+        if (e.key === 'ArrowLeft') rotateCarousel(-rotationStep);
+        if (e.key === 'ArrowRight') rotateCarousel(rotationStep);
+      });
+
+      // 5) Accessible Modals
+      const serviceOverlay = document.getElementById('service-overlay');
+      const serviceTitle = document.getElementById('service-title');
+      const serviceDesc = document.getElementById('service-desc');
+      const contactForm = document.getElementById('contact-form');
+      const serviceIdInput = document.getElementById('service-id');
+      const modalStatus = document.getElementById('modal-status');
+      const closeServiceModalBtn = document.getElementById('close-service-modal');
+      
+      const specialtiesOverlay = document.getElementById('specialties-overlay');
+      const specialtiesList = document.getElementById('specialties-list');
+      const closeSpecialtiesModalBtn = document.getElementById('close-specialties-modal');
+      const specialtiesBtn = document.getElementById('specialties-btn');
+      
+      const costsOverlay = document.getElementById('costs-overlay');
+      const closeCostsModalBtn = document.getElementById('close-costs-modal');
+      const costsBtn = document.getElementById('costs-btn');
+
+      let lastFocusedElement = null;
+
+      function openServiceModal(serviceId) {
+        const svc = SERVICES.find(s => s.id === serviceId);
+        if (!svc) return;
+        
+        const detailsLang = svc.details[currentLang] || svc.details.es; // Fallback to Spanish
+
+        serviceIdInput.value = serviceId;
+        serviceTitle.textContent = svc.names[currentLang] ?? svc.names.es;
+        
+        let descriptionHtml = `
+            <p>${detailsLang.description}</p>
+            <hr>
+            <h4>Costo del Servicio</h4>
+            <p>${detailsLang.cost}</p>
+            <h4>Proceso de Consulta</h4>
+            <p>${detailsLang.process}</p>
+        `;
+        serviceDesc.innerHTML = descriptionHtml;
+
+
+        serviceOverlay.style.display = 'flex';
+        serviceOverlay.setAttribute('aria-hidden', 'false');
+        
+        lastFocusedElement = document.activeElement;
+        setTimeout(() => closeServiceModalBtn.focus(), 50);
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', trapFocus);
+      }
+
+      function closeServiceModal() {
+        serviceOverlay.style.display = 'none';
+        serviceOverlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if(lastFocusedElement) lastFocusedElement.focus();
+        document.removeEventListener('keydown', trapFocus);
+      }
+
+      function openSpecialtiesModal() {
+        specialtiesOverlay.style.display = 'flex';
+        specialtiesOverlay.setAttribute('aria-hidden', 'false');
+        lastFocusedElement = document.activeElement;
+        setTimeout(() => closeSpecialtiesModalBtn.focus(), 50);
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', trapFocus);
+      }
+
+      function closeSpecialtiesModal() {
+        specialtiesOverlay.style.display = 'none';
+        specialtiesOverlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if(lastFocusedElement) lastFocusedElement.focus();
+        document.removeEventListener('keydown', trapFocus);
+      }
+      
+      function openCostsModal() {
+        costsOverlay.style.display = 'flex';
+        costsOverlay.setAttribute('aria-hidden', 'false');
+        lastFocusedElement = document.activeElement;
+        setTimeout(() => closeCostsModalBtn.focus(), 50);
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', trapFocus);
+      }
+
+      function closeCostsModal() {
+        costsOverlay.style.display = 'none';
+        costsOverlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if(lastFocusedElement) lastFocusedElement.focus();
+        document.removeEventListener('keydown', trapFocus);
+      }
+      
+      function populateSpecialtiesList() {
+        specialtiesList.innerHTML = '';
+        SERVICES.forEach(svc => {
+            const item = document.createElement('div');
+            item.className = 'specialty-item';
+            item.textContent = svc.names[currentLang];
+            item.dataset.serviceId = svc.id;
+            item.setAttribute('role', 'button');
+            item.tabIndex = 0;
+            specialtiesList.appendChild(item);
+
+            item.addEventListener('click', () => {
+                closeSpecialtiesModal();
+                setTimeout(() => openServiceModal(svc.id), 150);
+            });
+            item.addEventListener('keydown', (e) => {
+                if(e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    closeSpecialtiesModal();
+                    setTimeout(() => openServiceModal(svc.id), 150);
+                }
+            });
+        });
+      }
+
+
+      function trapFocus(e) {
+        if (e.key !== 'Tab') return;
+        const activeOverlay = document.querySelector('.overlay[aria-hidden="false"]');
+        if(!activeOverlay) return;
+
+        const focusables = Array.from(activeOverlay.querySelectorAll('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])')).filter(el => !el.disabled);
+        if (focusables.length === 0) return;
+        
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+
+        if (e.shiftKey) {
+          if (active === first) { last.focus(); e.preventDefault(); }
+        } else {
+          if (active === last) { first.focus(); e.preventDefault(); }
+        }
+      }
+
+      serviceOverlay.addEventListener('click', (e) => { if (e.target === serviceOverlay) closeServiceModal(); });
+      closeServiceModalBtn.addEventListener('click', closeServiceModal);
+      
+      specialtiesOverlay.addEventListener('click', (e) => { if (e.target === specialtiesOverlay) closeSpecialtiesModal(); });
+      closeSpecialtiesModalBtn.addEventListener('click', closeSpecialtiesModal);
+      specialtiesBtn.addEventListener('click', openSpecialtiesModal);
+
+      costsOverlay.addEventListener('click', (e) => { if (e.target === costsOverlay) closeCostsModal(); });
+      closeCostsModalBtn.addEventListener('click', closeCostsModal);
+      costsBtn.addEventListener('click', openCostsModal);
+
+
+      // 6) Simple Contact Form
+      contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const data = new FormData(form);
+        
+        modalStatus.textContent = 'Enviando...';
+
+        try {
+          const response = await fetch(form.action, {
+            method: form.method,
+            body: data,
+            headers: {
+                'Accept': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            modalStatus.textContent = t('form-thank-you');
+            form.reset();
+          } else {
+            const responseData = await response.json();
+            if (Object.hasOwn(responseData, 'errors')) {
+                modalStatus.textContent = responseData["errors"].map(error => error["message"]).join(", ");
+            } else {
+                modalStatus.textContent = "Oops! Hubo un problema al enviar tu formulario.";
+            }
+          }
+        } catch (error) {
+          modalStatus.textContent = "Error de conexión. Por favor, inténtalo de nuevo.";
+        }
+      });
+
+      // 7) AI Advisor Panel
+      const advisor = document.getElementById('advisor');
+      const openAdvisorBtn = document.getElementById('open-advisor');
+      const closeAdvisorBtn = document.getElementById('close-advisor');
+      const messagesEl = document.getElementById('messages');
+      const userInput = document.getElementById('user-input');
+      const sendBtn = document.getElementById('send-btn');
+
+      function openAdvisor() {
+        advisor.classList.add('open');
+        setTimeout(() => userInput.focus(), 50);
+      }
+      function closeAdvisor() { advisor.classList.remove('open'); }
+      
+      openAdvisorBtn.addEventListener('click', openAdvisor);
+      closeAdvisorBtn.addEventListener('click', closeAdvisor);
+
+      function addMessage(text, sender = 'user', thinking = false) {
+        const div = document.createElement('div');
+        div.className = `message ${sender}`;
+        if (thinking) {
+          div.classList.add('thinking');
+        }
+        div.textContent = text;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        return div;
+      }
+      
+      async function getAIResponse(prompt) {
+          const systemPrompt = "Eres un asistente legal de la firma de abogados colombiana JERYVPSYPS. Tu propósito es dar información legal general, basada en la legislación de Colombia. Al final de tus respuestas, siempre debes recomendar al usuario que contacte a un abogado de la firma para obtener asesoría formal y mencionar que pueden usar el formulario de contacto de la página. No debes dar asesoramiento legal específico ni crear una relación abogado-cliente. Importante: Siempre debes incluir el siguiente descargo de responsabilidad al final de cada respuesta, en una nueva línea y en negrilla: '*La información proporcionada es generada por IA y no constituye asesoría legal ni genera responsabilidad para la firma. Te recomendamos consultar con un abogado.*' Responde siempre en el idioma de la pregunta del usuario.";
+          
+          let chatHistory = [
+              { role: "user", parts: [{ text: systemPrompt }] },
+              { role: "model", parts: [{ text: "Entendido. Estoy listo para ayudar." }] },
+              { role: "user", parts: [{ text: prompt }] }
+          ];
+
+          const payload = { contents: chatHistory };
+          const apiKey = ""; // Provided by the environment
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+          try {
+              const response = await fetch(apiUrl, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload)
+              });
+              
+              if (!response.ok) {
+                  return "Lo siento, no puedo responder en este momento. Por favor, intenta de nuevo más tarde.";
+              }
+
+              const result = await response.json();
+              if (result.candidates && result.candidates.length > 0) {
+                  return result.candidates[0].content.parts[0].text;
+              }
+              return "No he podido procesar tu solicitud. Inténtalo de nuevo.";
+
+          } catch (error) {
+              console.error("Error fetching AI response:", error);
+              return "Hay un problema de conexión. Por favor, verifica tu red y vuelve a intentarlo.";
+          }
+      }
+
+
+      async function handleSend() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        userInput.value = '';
+        sendBtn.disabled = true;
+        userInput.disabled = true;
+
+        const thinkingMessage = addMessage('Pensando', 'bot', true);
+
+        const reply = await getAIResponse(text);
+        
+        thinkingMessage.textContent = reply;
+        thinkingMessage.classList.remove('thinking');
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        sendBtn.disabled = false;
+        userInput.disabled = false;
+        userInput.focus();
+      }
+
+      sendBtn.addEventListener('click', handleSend);
+      userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleSend();
+        }
+      });
+
+      // 8) i18n Application
+      function t(key) {
+        return translations[currentLang]?.[key] ?? translations.es[key] ?? key;
+      }
+
+      function applyTranslations() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          el.textContent = t(el.getAttribute('data-i18n'));
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+        });
+      }
+      
+      function updateCarouselLanguage() {
+        const items = stage.querySelectorAll('.carousel-item');
+        items.forEach((item, idx) => {
+            const service = SERVICES[idx];
+            if (service) {
+                const newName = service.names[currentLang] ?? service.names.es;
+                item.textContent = newName;
+                item.setAttribute('aria-label', newName);
+            }
+        });
+      }
+
+      // 9) Language Change Handler
+      document.getElementById('lang-select').addEventListener('change', (e) => {
+        currentLang = e.target.value;
+        
+        if (currentLang === 'he') {
+            document.body.classList.add('rtl');
+        } else {
+            document.body.classList.remove('rtl');
+        }
+
+        applyTranslations();
+        updateCarouselLanguage();
+        populateSpecialtiesList();
+        
+        if (serviceOverlay.style.display === 'flex') {
+          const svcId = serviceIdInput.value;
+          const svc = SERVICES.find(s => s.id === svcId);
+          if (svc) {
+            const detailsLang = svc.details[currentLang] || svc.details.es;
+            serviceTitle.textContent = svc.names[currentLang];
+            let descriptionHtml = `
+                <p>${detailsLang.description}</p>
+                <hr>
+                <h4>Costo del Servicio</h4>
+                <p>${detailsLang.cost}</p>
+                <h4>Proceso de Consulta</h4>
+                <p>${detailsLang.process}</p>
+            `;
+            serviceDesc.innerHTML = descriptionHtml;
+          }
+        }
+      });
+
+      // 10) Initialization
+      document.addEventListener('DOMContentLoaded', () => {
+        renderCarousel();
+        applyTranslations();
+        populateSpecialtiesList();
+      });
+
+    })();
+  
+    // Separate script for the background canvas animation
+    (function() {
+      const canvas = document.getElementById('bg-canvas');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      let width, height, particles;
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        particles = [];
+        const particleCount = Math.floor((width * height) / 25000); // Adjust density based on screen size
+
+        for (let i = 0; i < particleCount; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: Math.random() * 0.2 - 0.1,
+            vy: Math.random() * 0.2 - 0.1,
+            radius: Math.random() * 1.5 + 0.5,
+          });
+        }
+      }
+
+      function animate() {
+        if(!ctx) return;
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = 'rgba(212, 175, 55, 0.5)'; // Gold color for particles
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0 || p.x > width) p.vx *= -1;
+          if (p.y < 0 || p.y > height) p.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', resize);
+      
+      // Initialize
+      resize();
+      animate();
+    })();
+  </script>
+</body>
+</html>
